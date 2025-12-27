@@ -5,22 +5,27 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import './global.css';
+import { StyleSheet, Text, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
+    <LinearGradient
+      colors={['#63B5AF', '#539E98', '#438883']}
+      angle={135}
+      style={styles.linearGradient}
+      locations={[0.3, 0.5, 0.7]}
+    >
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-white text-5xl font-bold">Mono</Text>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  linearGradient: {
     flex: 1,
   },
 });

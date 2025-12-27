@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+build/
+dist/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+
+# React Native
+android/
+ios/
+.expo/
+
+# Generated files
+*.generated.*
+
+
