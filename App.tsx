@@ -6,28 +6,19 @@
  */
 
 import './global.css';
-import { StyleSheet, Text, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { NavigationWrapper } from '@navigation/Navigation';
+import { Provider } from 'react-redux';
+import store, { persistore } from '@stores/reducers/store';
+import { PersistGate } from 'redux-persist/es/integration/react';
 
 function App() {
   return (
-    <LinearGradient
-      colors={['#63B5AF', '#539E98', '#438883']}
-      angle={135}
-      style={styles.linearGradient}
-      locations={[0.3, 0.5, 0.7]}
-    >
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-white text-5xl font-bold">Mono</Text>
-      </View>
-    </LinearGradient>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistore}>
+        <NavigationWrapper />
+      </PersistGate>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  linearGradient: {
-    flex: 1,
-  },
-});
 
 export default App;
