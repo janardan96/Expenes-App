@@ -6,7 +6,7 @@ import { profile } from '@stores/reducers/userReducers';
 const HomeScreen = () => {
   const UserProfile = useSelector(profile);
   return (
-    <View className="flex flex-1 ">
+    <View className="flex flex-1 bg-[#F0F6F5]">
       <Image
         source={require('@assets/images/BackgroundCard.png')}
         className="w-full max-h-[290px] absolute top-0"

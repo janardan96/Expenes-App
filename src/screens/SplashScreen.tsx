@@ -18,7 +18,7 @@ const SplashScreen = () => {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: ScreensName.UserBottomTab }],
+            routes: [{ name: ScreensName.StartUpScreen }],
           }),
         );
       }, 3000);

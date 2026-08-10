@@ -10,4 +10,5 @@ export const BottomTabScreens = {
   Stats: 'Stats',
   Wallet: 'Wallet',
   Profile: 'Profile',
+  AddExpense: 'AddExpense',
 };
