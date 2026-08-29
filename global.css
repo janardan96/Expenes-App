@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: 67, 136, 131;
+  --color-primary: #539e98;
+  --color-primary-dark: #1a3d3a;
   --color-secondary: 0 100 255;
+  --color-dark-bg: #1c1c1c;
+  --color-dark-bottomNav: #2d2e2e;
+  --color-darkCard: #2c2c2c;
+  --color-border-primary: #dddddd;
+  --color-border-primary-dark: #444444;
 }
 
 @layer base {

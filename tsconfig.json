@@ -10,7 +10,8 @@
       "@navigation/*": ["src/Navigations/*"],
       "@components/*": ["src/components/*"],
       "@stores/*": ["src/stores/*"],
-      "@screens/*": ["src/screens/*"]
+      "@screens/*": ["src/screens/*"],
+      "@context/*": ["src/context/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts"],

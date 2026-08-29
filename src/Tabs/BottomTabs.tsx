@@ -9,10 +9,13 @@ import ProfileTabIcon from '@assets/icons/ProfileTabIcon';
 import { Platform } from 'react-native';
 import AddTabButton from '@components/tab/AddTabButton';
 import AddExpense from '@screens/AddExpense/Add';
+import { useTheme } from '@context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === 'dark';
   return (
     <Tab.Navigator
       screenOptions={{
@@ -23,6 +26,11 @@ const BottomTabs = () => {
           height: Platform.OS === 'ios' ? 80 : 60,
           paddingTop: 12,
           paddingBottom: 0,
+          backgroundColor: isDark ? '#242626' : '#FFFFFF',
+          borderTopColor: isDark ? '#1C3B36' : '#EAEAEA',
+          // borderTopWidth: 1,
+          elevation: 0, // removes default Android shadow that can look off in dark mode
+          shadowOpacity: 0, // removes default iOS shadow
         },
         tabBarIconStyle: {
           marginTop: 0,
@@ -60,6 +68,7 @@ const BottomTabs = () => {
           tabBarButton: props => (
             <AddTabButton
               onPress={() => {
+                setTheme(theme === 'dark' ? 'light' : 'dark'); // Toggle theme on button press
                 // open your add modal / bottom sheet here
                 // e.g. navigation.navigate('AddModal')
               }}

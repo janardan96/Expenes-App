@@ -1,7 +1,7 @@
 import { createMMKV } from 'react-native-mmkv';
 import { Storage } from 'redux-persist';
 
-const storage = createMMKV();
+export const storage = createMMKV();
 
 export const token_storage = createMMKV({
   id: 'user_storage',

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import React, { useEffect } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -6,10 +6,17 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import { ScreensName } from '../utils/screen';
 import { useSelector } from 'react-redux';
 import { profile } from '@stores/reducers/userReducers';
+import CustomText from '@components/common/CustomText';
+import { useTheme } from '@context/ThemeContext';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
   const UserProfile = useSelector(profile);
+  const { theme } = useTheme();
+  const gradientColors =
+    theme === 'dark'
+      ? ['#1A3D3A', '#12302D', '#0B2523']
+      : ['#63B5AF', '#539E98', '#438883'];
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -18,7 +25,8 @@ const SplashScreen = () => {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: ScreensName.StartUpScreen }],
+            // routes: [{ name: ScreensName.StartUpScreen }],
+            routes: [{ name: ScreensName.UserBottomTab }],
           }),
         );
       }, 3000);
@@ -34,7 +42,7 @@ const SplashScreen = () => {
           routes: [{ name: ScreensName.StartUpScreen }],
         }),
       );
-      //   resetAndNavigate('LoginScreen');
+      // resetAndNavigate('LoginScreen');
     }, 3000);
 
     return () => {
@@ -44,7 +52,7 @@ const SplashScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#63B5AF', '#539E98', '#438883']}
+      colors={gradientColors}
       angle={135}
       style={styles.linearGradient}
       locations={[0.3, 0.5, 0.7]}
@@ -52,9 +60,22 @@ const SplashScreen = () => {
       <View className="flex-1 items-center justify-center">
         <Animated.View
           className={'justify-center items-center px-10'}
-          entering={FadeInDown.delay(400).duration(800)}
+          entering={FadeInDown.delay(400).duration(1400)}
         >
-          <Text className="text-white text-5xl font-bold">Mono</Text>
+          <Image
+            source={require('@assets/images/LogoWithoutText.png')}
+            resizeMode="contain"
+            alt="Logo"
+            className="w-36 h-36 mb-4"
+          />
+        </Animated.View>
+        <Animated.View
+          className={'justify-center items-center px-10'}
+          entering={FadeInDown.delay(600).duration(990)}
+        >
+          <CustomText variant="h2" className="font-bold text-white">
+            MoneyBook
+          </CustomText>
         </Animated.View>
       </View>
     </LinearGradient>

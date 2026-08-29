@@ -7,11 +7,18 @@ module.exports = {
     './components/**/*.{js,jsx,ts,tsx}',
   ],
   presets: [require('nativewind/preset')],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: 'rgb(var(--color-primary) / <alpha-value>)',
+        primary: 'var(--color-primary)',
+        primaryDark: 'var(--color-primary-dark)',
         secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        'dark-bg': 'var(--color-dark-bg)',
+        'dark-bottomNav': 'var(--color-dark-bottomNav)',
+        'dark-card': 'var(--color-darkCard)',
+        BDPrimary: 'var(--color-border-primary)',
+        'BDPrimary-dark': 'var(--color-border-primary-dark)',
       },
       fontFamily: {
         inter: ['Inter-Regular', 'system-ui', '-apple-system', 'sans-serif'],

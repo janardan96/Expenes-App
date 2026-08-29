@@ -20,7 +20,7 @@ const StartUpScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white ">
       <Image
         source={require('@assets/images/Login.png')}
         className="w-full max-h-[610px]"
