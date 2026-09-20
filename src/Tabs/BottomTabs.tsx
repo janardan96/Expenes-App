@@ -65,7 +65,7 @@ const BottomTabs = () => {
         name={BottomTabScreens.AddExpense}
         component={AddExpense} // This screen won't render anything
         options={{
-          tabBarButton: props => (
+          tabBarButton: () => (
             <AddTabButton
               onPress={() => {
                 setTheme(theme === 'dark' ? 'light' : 'dark'); // Toggle theme on button press

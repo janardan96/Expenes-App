@@ -3,8 +3,9 @@ import React from 'react';
 import CustomText from '@components/common/CustomText';
 import { useTheme } from '@context/ThemeContext';
 import { customData } from '@utils/dummyData';
+import { Minus, Plus } from 'lucide-react-native';
 
-const TopCategories = () => {
+const RecentExpense = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const sortedData = customData
@@ -17,7 +18,7 @@ const TopCategories = () => {
           variant="h5"
           className="font-semibold text-gray-700 dark:text-gray-200"
         >
-          Top Categories
+          Recent Transactions
         </CustomText>
         <CustomText
           variant="h6"
@@ -41,19 +42,34 @@ const TopCategories = () => {
                   {item.icon}
                 </View>
                 <View className="flex-1 px-4">
-                  <View className=" flex flex-row justify-between">
-                    <CustomText
-                      variant="h6"
-                      className="text-gray-700 dark:text-gray-200 font-medium "
-                    >
-                      {item.name}
-                    </CustomText>
-                    <CustomText
-                      variant="h6"
-                      className="font-semibold text-gray-700 dark:text-gray-200"
-                    >
-                      ₹{Math.round(Number(item.amount)).toFixed(0)}
-                    </CustomText>
+                  <View className=" flex flex-row justify-between items-center">
+                    <View className="flex flex-col gap-y-1.5">
+                      <CustomText
+                        variant="h6"
+                        className="text-gray-700 dark:text-gray-200 font-medium "
+                      >
+                        {item.name}
+                      </CustomText>
+                      <CustomText
+                        variant="h8"
+                        className="text-gray-500 dark:text-gray-400 font-medium "
+                      >
+                        {item.date} | {item.mode}
+                      </CustomText>
+                    </View>
+                    <View className="flex flex-row gap-x-1 items-center">
+                      {item.type === 'income' ? (
+                        <Plus size={16} strokeWidth={2.5} color="#2ac783" />
+                      ) : (
+                        <Minus size={16} strokeWidth={2.5} color="#ff6b6b" />
+                      )}
+                      <CustomText
+                        variant="h6"
+                        className="font-semibold text-gray-700 dark:text-gray-200"
+                      >
+                        ₹{Math.round(Number(item.amount)).toFixed(0)}
+                      </CustomText>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -83,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopCategories;
+export default RecentExpense;

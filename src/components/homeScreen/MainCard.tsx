@@ -63,11 +63,11 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.5,
-        shadowRadius: 12,
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
       },
       android: {
-        elevation: 8,
+        elevation: 4,
       },
     }),
   },

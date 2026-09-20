@@ -11,7 +11,8 @@
       "@components/*": ["src/components/*"],
       "@stores/*": ["src/stores/*"],
       "@screens/*": ["src/screens/*"],
-      "@context/*": ["src/context/*"]
+      "@context/*": ["src/context/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts"],
