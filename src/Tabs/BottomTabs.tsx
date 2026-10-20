@@ -10,11 +10,14 @@ import { Platform } from 'react-native';
 import AddTabButton from '@components/tab/AddTabButton';
 import AddExpense from '@screens/AddExpense/Add';
 import { useTheme } from '@context/ThemeContext';
+import { useNavigation, type NavigationProp } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
   const { theme, setTheme } = useTheme();
+  const navigation =
+    useNavigation<NavigationProp<Record<string, object | undefined>>>();
   const isDark = theme === 'dark';
   return (
     <Tab.Navigator

@@ -16,6 +16,7 @@ import MainCard from '@components/homeScreen/MainCard';
 import Card from '@components/homeScreen/Card';
 import TopCategories from '@components/homeScreen/TopCategories';
 import RecentExpense from '@components/homeScreen/RecentExpense';
+import Layout from '@components/common/Layout';
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
 
@@ -203,7 +204,7 @@ const HomeScreen = () => {
   });
 
   return (
-    <View className="flex-1 bg-[#F0F6F5] dark:bg-dark-bg">
+    <Layout>
       {/* ========================================
           BACKGROUND
       ======================================== */}
@@ -329,7 +330,7 @@ const HomeScreen = () => {
           )}
         />
       </SafeAreaView>
-    </View>
+    </Layout>
   );
 };
 

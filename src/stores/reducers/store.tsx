@@ -12,16 +12,18 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import reduxStorage from '@stores/storage';
+import TransactionsReducer from './transactionReducers';
 
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
   blacklist: [],
-  whitelist: ['profile'],
+  whitelist: ['profile', 'transactions'],
 };
 
 const rootReducer = combineReducers({
   profile: ProfileReducer,
+  transactions: TransactionsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -4,6 +4,11 @@
  * Full screen: pick/capture a receipt image -> run on-device OCR (ML Kit)
  * -> auto-fill an editable "Total" field the user can correct before saving.
  *
+ * The screen is split in two parts:
+ *   - ReceiptScannerContent  -> just the content, ready to be dropped inside
+ *                                a bottom sheet (see Add.tsx) or any container.
+ *   - ReceiptScannerScreen   -> the full screen wrapper (safe area + background)
+ *
  * Dependencies (install these first):
  *   npm install react-native-image-picker
  *   npm install @react-native-ml-kit/text-recognition
@@ -48,6 +53,7 @@ import {
   ImagePickerResponse,
 } from 'react-native-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
+import { X } from 'lucide-react-native';
 import { parseTotalFromText, Confidence } from '../../utils/recieptParser';
 
 export interface ReceiptSaveResult {
@@ -55,23 +61,28 @@ export interface ReceiptSaveResult {
   total: number;
 }
 
+interface ReceiptScannerContentProps {
+  onSave?: (result: ReceiptSaveResult) => void;
+  /** Shows a close button, used when the content lives inside a sheet */
+  onClose?: () => void;
+}
+
 interface ReceiptScannerScreenProps {
   onSave?: (result: ReceiptSaveResult) => void;
 }
 
-export default function ReceiptScannerScreen({
+export function ReceiptScannerContent({
   onSave,
-}: ReceiptScannerScreenProps) {
+  onClose,
+}: ReceiptScannerContentProps) {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [totalText, setTotalText] = useState<string>('');
   const [confidence, setConfidence] = useState<Confidence | null>(null);
-  const [rawText, setRawText] = useState<string>('');
 
   const resetState = (): void => {
     setTotalText('');
     setConfidence(null);
-    setRawText('');
   };
 
   const runOcr = async (uri: string): Promise<void> => {
@@ -81,7 +92,6 @@ export default function ReceiptScannerScreen({
       const result = await TextRecognition.recognize(uri);
       const { total, confidence: conf } = parseTotalFromText(result.text);
 
-      setRawText(result.text);
       setConfidence(conf);
       setTotalText(total !== null ? total.toFixed(2) : '');
 
@@ -173,6 +183,12 @@ export default function ReceiptScannerScreen({
     return 'text-red-600';
   };
 
+  const confidenceBadgeClass = (level: Confidence): string => {
+    if (level === 'high') return 'bg-green-50';
+    if (level === 'medium') return 'bg-yellow-50';
+    return 'bg-red-50';
+  };
+
   const confidenceLabel = (level: Confidence): string => {
     if (level === 'high') return '✓ Detected automatically';
     if (level === 'medium') return '⚠ Detected, please double-check';
@@ -180,83 +196,135 @@ export default function ReceiptScannerScreen({
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-      <ScrollView contentContainerClassName="p-5 pb-16">
-        <Text className="text-2xl font-bold mb-4 text-gray-900">
-          Scan a bill
-        </Text>
+    <ScrollView
+      contentContainerClassName="px-5 pt-3 pb-8"
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* ==========================================
+          HEADER
+      ========================================== */}
 
+      <View className="flex-row items-center justify-between mb-4">
+        <View className="flex-1 pr-3">
+          <Text className="text-xl font-bold text-gray-900">Scan a bill</Text>
+
+          <Text className="text-sm text-gray-500 mt-0.5">
+            Capture the receipt and we will fill the total for you
+          </Text>
+        </View>
+
+        {onClose ? (
+          <TouchableOpacity
+            onPress={onClose}
+            activeOpacity={0.7}
+            className="h-9 w-9 items-center justify-center rounded-full bg-gray-100"
+          >
+            <X size={18} color="#4b5563" />
+          </TouchableOpacity>
+        ) : null}
+      </View>
+
+      {/* ==========================================
+          RECEIPT PREVIEW
+      ========================================== */}
+
+      <View className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
         {imageUri ? (
           <Image
             source={{ uri: imageUri }}
-            className="w-full h-64 rounded-xl bg-gray-100 mb-4"
+            className="w-full h-56"
             resizeMode="contain"
           />
         ) : (
-          <View className="w-full h-52 rounded-xl bg-gray-100 items-center justify-center mb-4">
-            <Text className="text-gray-400">No image selected</Text>
+          <View className="w-full h-48 items-center justify-center">
+            <Text className="text-gray-400 text-sm">No image selected</Text>
           </View>
         )}
+      </View>
 
-        <View className="flex-row gap-3 mb-4">
+      {/* ==========================================
+          SOURCE PICKERS
+      ========================================== */}
+
+      <View className="flex-row gap-3 mt-4">
+        <TouchableOpacity
+          className="flex-1 bg-[#296e69] py-3.5 rounded-xl items-center active:opacity-90"
+          onPress={takePhoto}
+        >
+          <Text className="text-white font-semibold">Take Photo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="flex-1 bg-white border border-[#296e69] py-3.5 rounded-xl items-center active:opacity-90"
+          onPress={pickFromLibrary}
+        >
+          <Text className="text-[#296e69] font-semibold">Choose a Photo</Text>
+        </TouchableOpacity>
+      </View>
+
+      {loading && (
+        <View className="flex-row items-center gap-2 mt-3">
+          <ActivityIndicator size="small" color="#296e69" />
+          <Text className="text-gray-600 text-sm">Reading receipt…</Text>
+        </View>
+      )}
+
+      {/* ==========================================
+          TOTAL
+      ========================================== */}
+
+      {!loading && imageUri && (
+        <View className="mt-5">
+          <Text className="text-sm font-semibold mb-1.5 text-gray-800">
+            Total amount
+          </Text>
+
+          <View className="flex-row items-center border border-gray-200 rounded-xl px-3 bg-white">
+            <Text className="text-lg mr-1.5 text-gray-800">₹</Text>
+
+            <TextInput
+              className="flex-1 text-lg py-3 text-gray-900"
+              keyboardType="decimal-pad"
+              value={totalText}
+              onChangeText={setTotalText}
+              placeholder="0.00"
+              placeholderTextColor="#9ca3af"
+            />
+          </View>
+
+          {confidence && (
+            <View
+              className={`mt-2 self-start px-2.5 py-1 rounded-full ${confidenceBadgeClass(
+                confidence,
+              )}`}
+            >
+              <Text className={`text-xs ${confidenceTextClass(confidence)}`}>
+                {confidenceLabel(confidence)}
+              </Text>
+            </View>
+          )}
+
           <TouchableOpacity
-            className="flex-1 bg-gray-900 py-3 rounded-xl items-center"
-            onPress={takePhoto}
+            className="mt-5 bg-[#296e69] py-3.5 rounded-xl items-center active:opacity-90"
+            onPress={handleSave}
           >
-            <Text className="text-white font-semibold">Take Photo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-1 bg-gray-900 py-3 rounded-xl items-center"
-            onPress={pickFromLibrary}
-          >
-            <Text className="text-white font-semibold">
-              Choose from Gallery
+            <Text className="text-white font-bold text-base">
+              Use this amount
             </Text>
           </TouchableOpacity>
         </View>
+      )}
+    </ScrollView>
+  );
+}
 
-        {loading && (
-          <View className="flex-row items-center gap-2 mt-2">
-            <ActivityIndicator size="small" />
-            <Text className="text-gray-600">Reading receipt…</Text>
-          </View>
-        )}
-
-        {!loading && imageUri && (
-          <View className="mt-5">
-            <Text className="text-sm font-semibold mb-1.5 text-gray-800">
-              Total amount
-            </Text>
-            <View className="flex-row items-center border border-gray-300 rounded-xl px-3">
-              <Text className="text-lg mr-1.5 text-gray-800">₹</Text>
-              <TextInput
-                className="flex-1 text-lg py-3 text-gray-900"
-                keyboardType="decimal-pad"
-                value={totalText}
-                onChangeText={setTotalText}
-                placeholder="0.00"
-              />
-            </View>
-
-            {confidence && (
-              <Text
-                className={`mt-2 text-sm ${confidenceTextClass(confidence)}`}
-              >
-                {confidenceLabel(confidence)}
-              </Text>
-            )}
-
-            <TouchableOpacity
-              className="mt-5 bg-blue-600 py-3.5 rounded-xl items-center"
-              onPress={handleSave}
-            >
-              <Text className="text-white font-bold text-base">
-                Save Expense
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+export default function ReceiptScannerScreen({
+  onSave,
+}: ReceiptScannerScreenProps) {
+  return (
+    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+      <ReceiptScannerContent onSave={onSave} />
     </SafeAreaView>
   );
 }

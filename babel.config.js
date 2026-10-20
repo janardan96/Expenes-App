@@ -1,6 +1,8 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset', 'nativewind/babel'],
   plugins: [
+    // Required by zod v4 (uses `export * as ns from ...`) under Metro
+    '@babel/plugin-transform-export-namespace-from',
     [
       'module-resolver',
       {
