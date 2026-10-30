@@ -6,9 +6,7 @@ type WrapperProps = {
 };
 
 const Layout = ({ children }: WrapperProps) => {
-  return (
-    <View className="flex-1 bg-[#F0F6F5] dark:bg-dark-bg">{children}</View>
-  );
+  return <View className="flex-1 bg-lightBG dark:bg-dark-bg">{children}</View>;
 };
 
 export default Layout;

@@ -7,7 +7,7 @@ import StatsTabIcon from '@assets/icons/StatsTabIcon';
 import WalletTabIcon from '@assets/icons/WalletTabIcon';
 import ProfileTabIcon from '@assets/icons/ProfileTabIcon';
 import { Platform } from 'react-native';
-import AddTabButton from '@components/tab/AddTabButton';
+import GlassTabBar from '@components/tab/GlassTabBar';
 import AddExpense from '@screens/AddExpense/Add';
 import { useTheme } from '@context/ThemeContext';
 import { useNavigation, type NavigationProp } from '@react-navigation/native';
@@ -21,6 +21,7 @@ const BottomTabs = () => {
   const isDark = theme === 'dark';
   return (
     <Tab.Navigator
+      tabBar={props => <GlassTabBar {...props} />}
       screenOptions={{
         headerShown: false,
         tabBarHideOnKeyboard: true,
@@ -49,7 +50,7 @@ const BottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <HomeTabIcon focused={focused} size={size ?? 24} />
+            <HomeTabIcon focused={focused} size={20} />
           ),
         }}
       />
@@ -59,7 +60,7 @@ const BottomTabs = () => {
         component={AddExpense}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <StatsTabIcon focused={focused} size={focused ? 28 : size ?? 24} />
+            <StatsTabIcon focused={focused} size={20} />
           ),
         }}
       />
@@ -67,17 +68,6 @@ const BottomTabs = () => {
       <Tab.Screen
         name={BottomTabScreens.AddExpense}
         component={AddExpense} // This screen won't render anything
-        options={{
-          tabBarButton: () => (
-            <AddTabButton
-              onPress={() => {
-                setTheme(theme === 'dark' ? 'light' : 'dark'); // Toggle theme on button press
-                // open your add modal / bottom sheet here
-                // e.g. navigation.navigate('AddModal')
-              }}
-            />
-          ),
-        }}
         listeners={{
           tabPress: e => {
             // stop React Navigation from treating this as a normal tab switch
@@ -90,8 +80,8 @@ const BottomTabs = () => {
         name={BottomTabScreens.Wallet}
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <WalletTabIcon focused={focused} size={32} />
+          tabBarIcon: ({ focused, size }) => (
+            <WalletTabIcon focused={focused} size={26} />
           ),
         }}
       />
@@ -99,8 +89,8 @@ const BottomTabs = () => {
         name={BottomTabScreens.Profile}
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <ProfileTabIcon focused={focused} size={32} />
+          tabBarIcon: ({ focused, size }) => (
+            <ProfileTabIcon focused={focused} size={22} />
           ),
         }}
       />

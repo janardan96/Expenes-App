@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -6,6 +6,7 @@ import {
   Pressable,
   ScrollView,
   View,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -25,6 +26,7 @@ const AddExpense = () => {
   const [type, setType] = useState<TransactionType>('expense');
   const [scannerVisible, setScannerVisible] = useState(false);
   const [scannedAmount, setScannedAmount] = useState<string | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const isIncome = type === 'income';
 
@@ -40,16 +42,29 @@ const AddExpense = () => {
     closeScanner();
   };
 
+  React.useEffect(() => {
+    const subscription = Keyboard.addListener('keyboardDidShow', () => {
+      scrollViewRef.current?.scrollTo({
+        y: 380,
+        animated: true,
+      });
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   return (
     <Layout>
       <SafeAreaView className="flex-1" edges={['top']}>
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          keyboardVerticalOffset={10}
         >
           <ScrollView
+            ref={scrollViewRef}
             className="flex-1"
-            contentContainerClassName="px-4 pb-10"
+            contentContainerClassName="px-4 pb-32"
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >

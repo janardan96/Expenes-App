@@ -220,7 +220,7 @@ const HomeScreen = () => {
         style={backgroundAnimatedStyle}
       />
 
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1" edges={['top', 'left', 'right']}>
         <AnimatedSectionList
           sections={[
             {
@@ -235,6 +235,7 @@ const HomeScreen = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingHorizontal: 18,
+            // keeps the last rows clear of the floating glass tab bar
             paddingBottom: 0,
           }}
           // ========================================

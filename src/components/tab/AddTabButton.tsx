@@ -1,4 +1,4 @@
-// components/AddTabButton.tsx
+// components/tab/AddTabButton.tsx
 import AddTabIcon from '@assets/icons/AddExpenseIcon';
 import React from 'react';
 import { Pressable, StyleSheet, GestureResponderEvent } from 'react-native';
@@ -6,21 +6,26 @@ import { Pressable, StyleSheet, GestureResponderEvent } from 'react-native';
 
 type Props = {
   onPress?: (e: GestureResponderEvent) => void;
+  onLongPress?: (e: GestureResponderEvent) => void;
+  size?: number;
 };
 
-const AddTabButton: React.FC<Props> = ({ onPress }) => (
-  <Pressable onPress={onPress} style={styles.wrapper} hitSlop={12}>
-    <AddTabIcon size={65} />
+const AddTabButton: React.FC<Props> = ({ onPress, onLongPress, size = 56 }) => (
+  <Pressable
+    onPress={onPress}
+    onLongPress={onLongPress}
+    hitSlop={12}
+    style={styles.wrapper}
+    className="active:opacity-90"
+  >
+    <AddTabIcon size={size} />
   </Pressable>
 );
 
 const styles = StyleSheet.create({
   wrapper: {
-    position: 'absolute',
-    top: '-45%', // pulls it up above the tab bar top edge
-    alignSelf: 'center',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

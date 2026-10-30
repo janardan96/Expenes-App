@@ -14,6 +14,7 @@ module.exports = {
         primary: 'var(--color-primary)',
         primaryDark: 'var(--color-primary-dark)',
         secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        lightBG: 'var(--color-lightBG)',
         'dark-bg': 'var(--color-dark-bg)',
         'dark-bottomNav': 'var(--color-dark-bottomNav)',
         'dark-card': 'var(--color-darkCard)',
