@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
-  Modal,
   Platform,
-  Pressable,
   ScrollView,
   View,
   Keyboard,
@@ -12,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Layout from '@components/common/Layout';
 import CustomText from '@components/common/CustomText';
+import BottomSheet from '@components/common/BottomSheet';
 import SegmentedControl from '@components/addExpense/SegmentedControl';
 import TransactionForm from '@components/addExpense/TransactionForm';
 import { ReceiptScannerContent, type ReceiptSaveResult } from './RecipetPicker';
@@ -118,32 +117,12 @@ const AddExpense = () => {
           RECEIPT SCANNER (bottom sheet)
       ========================================== */}
 
-      <Modal
-        visible={scannerVisible}
-        transparent
-        animationType="slide"
-        statusBarTranslucent
-        onRequestClose={closeScanner}
-      >
-        <View className="flex-1 bg-black/50">
-          {/* Tapping the backdrop closes the sheet */}
-          <Pressable className="flex-1" onPress={closeScanner} />
-
-          <View className="bg-white rounded-t-3xl max-h-[100%] shadow-lg elevation-12">
-            {/* Drag handle */}
-            <View className="items-center pt-3 pb-1">
-              <View className="h-1 w-10 rounded-full bg-gray-300" />
-            </View>
-
-            <SafeAreaView edges={['bottom']} className="pb-3">
-              <ReceiptScannerContent
-                onSave={handleReceiptSave}
-                onClose={closeScanner}
-              />
-            </SafeAreaView>
-          </View>
-        </View>
-      </Modal>
+      <BottomSheet visible={scannerVisible} onClose={closeScanner} light>
+        <ReceiptScannerContent
+          onSave={handleReceiptSave}
+          onClose={closeScanner}
+        />
+      </BottomSheet>
     </Layout>
   );
 };

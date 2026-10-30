@@ -11,13 +11,16 @@ import { Provider } from 'react-redux';
 import store, { persistore } from '@stores/reducers/store';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { ThemeProvider } from '@context/ThemeContext';
+import { LanguageProvider } from '@context/LanguageContext';
 
 function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistore}>
         <ThemeProvider>
-          <NavigationWrapper />
+          <LanguageProvider>
+            <NavigationWrapper />
+          </LanguageProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

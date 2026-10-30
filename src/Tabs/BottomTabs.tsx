@@ -9,15 +9,13 @@ import ProfileTabIcon from '@assets/icons/ProfileTabIcon';
 import { Platform } from 'react-native';
 import GlassTabBar from '@components/tab/GlassTabBar';
 import AddExpense from '@screens/AddExpense/Add';
+import ProfileScreen from '@components/profile';
 import { useTheme } from '@context/ThemeContext';
-import { useNavigation, type NavigationProp } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
-  const { theme, setTheme } = useTheme();
-  const navigation =
-    useNavigation<NavigationProp<Record<string, object | undefined>>>();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   return (
     <Tab.Navigator
@@ -49,7 +47,7 @@ const BottomTabs = () => {
         name={BottomTabScreens.Home}
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
+          tabBarIcon: ({ focused }) => (
             <HomeTabIcon focused={focused} size={20} />
           ),
         }}
@@ -59,7 +57,7 @@ const BottomTabs = () => {
         name={BottomTabScreens.Stats}
         component={AddExpense}
         options={{
-          tabBarIcon: ({ focused, size }) => (
+          tabBarIcon: ({ focused }) => (
             <StatsTabIcon focused={focused} size={20} />
           ),
         }}
@@ -67,7 +65,7 @@ const BottomTabs = () => {
 
       <Tab.Screen
         name={BottomTabScreens.AddExpense}
-        component={AddExpense} // This screen won't render anything
+        component={() => <></>} // This screen won't render anything
         listeners={{
           tabPress: e => {
             // stop React Navigation from treating this as a normal tab switch
@@ -80,16 +78,16 @@ const BottomTabs = () => {
         name={BottomTabScreens.Wallet}
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
+          tabBarIcon: ({ focused }) => (
             <WalletTabIcon focused={focused} size={26} />
           ),
         }}
       />
       <Tab.Screen
         name={BottomTabScreens.Profile}
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
-          tabBarIcon: ({ focused, size }) => (
+          tabBarIcon: ({ focused }) => (
             <ProfileTabIcon focused={focused} size={22} />
           ),
         }}
