@@ -15,7 +15,7 @@ import { BottomTabScreens } from '@utils/screen';
  */
 const GlassTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const insets = useSafeAreaInsets();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -109,8 +109,7 @@ const GlassTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           className="absolute bottom-[42px] self-center"
         >
           <AddTabButton
-            onPress={() => navigation.navigate(BottomTabScreens.Stats)}
-            onLongPress={toggleTheme}
+            onPress={() => navigation.navigate(BottomTabScreens.AddExpense)}
           />
         </View>
       </View>

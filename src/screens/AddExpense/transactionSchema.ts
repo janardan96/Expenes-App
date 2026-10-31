@@ -23,7 +23,7 @@ const amountField = z
     /^\d+(\.\d{1,2})?$/,
     'Enter a valid amount, for example 250 or 250.50',
   )
-  .refine(value => Number(value) > 0, 'Amount must be greater than ₹0')
+  .refine(value => Number(value) > 0, 'Amount must be greater than zero')
   .refine(value => Number(value) <= MAX_AMOUNT, 'Amount looks too large');
 
 const titleField = z

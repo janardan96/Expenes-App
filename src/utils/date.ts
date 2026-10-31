@@ -15,6 +15,10 @@ export const isSameDay = (first: Date, second: Date): boolean =>
   first.getMonth() === second.getMonth() &&
   first.getDate() === second.getDate();
 
+export const isSameMonth = (first: Date, second: Date): boolean =>
+  first.getFullYear() === second.getFullYear() &&
+  first.getMonth() === second.getMonth();
+
 export const addMonths = (date: Date, amount: number): Date => {
   const copy = new Date(date);
   copy.setMonth(copy.getMonth() + amount);

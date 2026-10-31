@@ -3,6 +3,8 @@ export const ScreensName = {
   StartUpScreen: 'StartUpScreen',
   LoginScreen: 'LoginScreen',
   UserBottomTab: 'UserBottomTab',
+  Transactions: 'Transactions',
+  Categories: 'Categories',
 };
 
 export const BottomTabScreens = {
@@ -11,4 +13,5 @@ export const BottomTabScreens = {
   Wallet: 'Wallet',
   Profile: 'Profile',
   AddExpense: 'AddExpense',
+  EmptyScreen: 'EmptyScreen',
 };

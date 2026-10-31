@@ -1,248 +1,266 @@
-import React from 'react';
+import type { Transaction } from '@stores/reducers/transactionReducers';
 
-import {
-  UtensilsCrossed,
-  ShoppingBag,
-  Bus,
-  Tv,
-  Shirt,
-  Home,
-  Car,
-  HeartPulse,
-  GraduationCap,
-  Receipt,
-  Smartphone,
-  Dumbbell,
-  Plane,
-  Gift,
-  WalletCards,
-  Coffee,
-  Fuel,
-  BriefcaseBusiness,
-  Baby,
-  PawPrint,
-  MoreHorizontal,
-} from 'lucide-react-native';
+/**
+ * Toggle this off once real transactions are in place. While it is on, the
+ * sample data below is loaded whenever the store starts empty.
+ */
+export const SEED_SAMPLE_DATA = true;
 
-export const customData = [
-  {
-    name: 'Food & Dining',
-    amount: 233,
-    color: '#2ac783',
-    bgColor: 'bg-[#2ac783]/20',
-    icon: <UtensilsCrossed size={20} color="#2ac783" />,
+/** A date inside the current month, moved by `monthOffset` months. */
+const inMonth = (monthOffset: number, day: number, hour = 12): string => {
+  const now = new Date();
+  const lastDay = new Date(
+    now.getFullYear(),
+    now.getMonth() + monthOffset + 1,
+    0,
+  ).getDate();
+
+  return new Date(
+    now.getFullYear(),
+    now.getMonth() + monthOffset,
+    Math.min(day, lastDay),
+    hour,
+  ).toISOString();
+};
+
+/** A date `days` days before today, so "Today" / "This week" have data. */
+const daysAgo = (days: number, hour = 12): string => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  date.setHours(hour, 0, 0, 0);
+  return date.toISOString();
+};
+
+const makeTransaction = (
+  index: number,
+  values: Omit<Transaction, 'id' | 'notes' | 'createdAt'> & {
+    notes?: string;
+  },
+): Transaction => ({
+  ...values,
+  id: `sample-${String(index).padStart(2, '0')}`,
+  notes: values.notes ?? '',
+  createdAt: values.date,
+});
+
+/**
+ * Sample transactions covering today, this week, this month and the two
+ * previous months, spread across many expense and income categories.
+ */
+export const DUMMY_TRANSACTIONS: Transaction[] = [
+  // -----------------------------------------
+  // Today / this week
+  // -----------------------------------------
+  makeTransaction(1, {
     type: 'expense',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Groceries',
-    amount: 500,
-    color: '#27ae60',
-    bgColor: 'bg-[#27ae60]/20',
-    icon: <ShoppingBag size={20} color="#27ae60" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Shopping',
-    amount: 500,
-    color: '#ff6b6b',
-    bgColor: 'bg-[#ff6b6b]/20',
-    icon: <ShoppingBag size={20} color="#ff6b6b" />,
-    type: 'expense',
-    date: '15 Aug',
-    mode: 'Cash',
-  },
-  {
-    name: 'Travel',
-    amount: 1000,
-    color: '#f1c40f',
-    bgColor: 'bg-[#f1c40f]/20',
-    icon: <Bus size={20} color="#f1c40f" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Entertainment',
-    amount: 750,
-    color: '#9b59b6',
-    bgColor: 'bg-[#9b59b6]/20',
-    icon: <Tv size={20} color="#9b59b6" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Apparel',
-    amount: 750,
-    color: '#e67e22',
-    bgColor: 'bg-[#e67e22]/20',
-    icon: <Shirt size={20} color="#e67e22" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Rent & Housing',
-    amount: 12000,
-    color: '#3498db',
-    bgColor: 'bg-[#3498db]/20',
-    icon: <Home size={20} color="#3498db" />,
-    type: 'income',
-    date: '15 Aug',
+    title: 'Filter coffee',
+    amount: 180,
+    category: 'Coffee & Snacks',
     mode: 'UPI',
-  },
-  {
-    name: 'Transportation',
-    amount: 1200,
-    color: '#1abc9c',
-    bgColor: 'bg-[#1abc9c]/20',
-    icon: <Car size={20} color="#1abc9c" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Fuel',
-    amount: 1800,
-    color: '#e74c3c',
-    bgColor: 'bg-[#e74c3c]/20',
-    icon: <Fuel size={20} color="#e74c3c" />,
+    date: daysAgo(0, 9),
+    notes: 'Third Wave, Indiranagar',
+  }),
+  makeTransaction(2, {
     type: 'expense',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Bills & Utilities',
-    amount: 2500,
-    color: '#8e44ad',
-    bgColor: 'bg-[#8e44ad]/20',
-    icon: <Receipt size={20} color="#8e44ad" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Mobile & Internet',
-    amount: 999,
-    color: '#2980b9',
-    bgColor: 'bg-[#2980b9]/20',
-    icon: <Smartphone size={20} color="#2980b9" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Healthcare',
-    amount: 1500,
-    color: '#e84393',
-    bgColor: 'bg-[#e84393]/20',
-    icon: <HeartPulse size={20} color="#e84393" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Education',
-    amount: 2000,
-    color: '#16a085',
-    bgColor: 'bg-[#16a085]/20',
-    icon: <GraduationCap size={20} color="#16a085" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Fitness & Sports',
-    amount: 800,
-    color: '#d35400',
-    bgColor: 'bg-[#d35400]/20',
-    icon: <Dumbbell size={20} color="#d35400" />,
-    type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Travel & Vacation',
-    amount: 3000,
-    color: '#00b894',
-    bgColor: 'bg-[#00b894]/20',
-    icon: <Plane size={20} color="#00b894" />,
+    title: 'Weekly groceries',
+    amount: 2450,
+    category: 'Groceries',
+    mode: 'Debit Card',
+    date: daysAgo(0, 18),
+    notes: 'DMart run',
+  }),
+  makeTransaction(3, {
     type: 'expense',
-    date: '15 Aug',
+    title: 'Dinner with friends',
+    amount: 640,
+    category: 'Food & Dining',
     mode: 'Credit Card',
-  },
-  {
-    name: 'Coffee & Snacks',
+    date: daysAgo(1, 20),
+    notes: 'Truffles',
+  }),
+  makeTransaction(4, {
+    type: 'expense',
+    title: 'Auto to office',
+    amount: 260,
+    category: 'Transportation',
+    mode: 'UPI',
+    date: daysAgo(2, 9),
+  }),
+  makeTransaction(5, {
+    type: 'expense',
+    title: 'Movie tickets',
     amount: 450,
-    color: '#795548',
-    bgColor: 'bg-[#795548]/20',
-    icon: <Coffee size={20} color="#795548" />,
-    type: 'income',
-    date: '15 Aug',
+    category: 'Entertainment',
     mode: 'Credit Card',
-  },
-  {
-    name: 'Subscriptions',
-    amount: 699,
-    color: '#6c5ce7',
-    bgColor: 'bg-[#6c5ce7]/20',
-    icon: <WalletCards size={20} color="#6c5ce7" />,
+    date: daysAgo(3, 19),
+    notes: 'PVR, two tickets',
+  }),
+  makeTransaction(6, {
     type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Gifts & Donations',
-    amount: 1000,
-    color: '#fd79a8',
-    bgColor: 'bg-[#fd79a8]/20',
-    icon: <Gift size={20} color="#fd79a8" />,
+    title: 'Freelance landing page',
+    amount: 22000,
+    category: 'Freelance',
+    mode: 'UPI',
+    date: daysAgo(4, 15),
+    notes: 'Balance payment',
+  }),
+  makeTransaction(7, {
+    type: 'expense',
+    title: 'Petrol top-up',
+    amount: 1200,
+    category: 'Fuel',
+    mode: 'Debit Card',
+    date: daysAgo(5, 8),
+  }),
+
+  // -----------------------------------------
+  // Earlier this month
+  // -----------------------------------------
+  makeTransaction(8, {
     type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Work',
-    amount: 500,
-    color: '#636e72',
-    bgColor: 'bg-[#636e72]/20',
-    icon: <BriefcaseBusiness size={20} color="#636e72" />,
+    title: 'Monthly salary',
+    amount: 85000,
+    category: 'Salary',
+    mode: 'Net Banking',
+    date: inMonth(0, 1, 9),
+    notes: 'October payroll',
+  }),
+  makeTransaction(9, {
+    type: 'expense',
+    title: 'House rent',
+    amount: 18000,
+    category: 'Rent & Housing',
+    mode: 'Net Banking',
+    date: inMonth(0, 1, 11),
+  }),
+  makeTransaction(10, {
+    type: 'expense',
+    title: 'Electricity bill',
+    amount: 1450,
+    category: 'Bills & Utilities',
+    mode: 'Net Banking',
+    date: inMonth(0, 2, 10),
+  }),
+  makeTransaction(11, {
+    type: 'expense',
+    title: 'Mobile recharge',
+    amount: 799,
+    category: 'Mobile & Internet',
+    mode: 'UPI',
+    date: inMonth(0, 3, 12),
+  }),
+  makeTransaction(12, {
+    type: 'expense',
+    title: 'Pharmacy',
+    amount: 520,
+    category: 'Healthcare',
+    mode: 'Cash',
+    date: inMonth(0, 4, 17),
+  }),
+
+  // -----------------------------------------
+  // Last month
+  // -----------------------------------------
+  makeTransaction(13, {
     type: 'income',
-    date: '15 Aug',
+    title: 'Monthly salary',
+    amount: 85000,
+    category: 'Salary',
+    mode: 'Net Banking',
+    date: inMonth(-1, 1, 9),
+  }),
+  makeTransaction(14, {
+    type: 'expense',
+    title: 'Streaming bundles',
+    amount: 649,
+    category: 'Subscriptions',
     mode: 'Credit Card',
-  },
-  {
-    name: 'Family & Kids',
+    date: inMonth(-1, 5, 8),
+    notes: 'Music + video',
+  }),
+  makeTransaction(15, {
+    type: 'expense',
+    title: 'Winter jacket',
+    amount: 2100,
+    category: 'Apparel',
+    mode: 'Credit Card',
+    date: inMonth(-1, 8, 14),
+  }),
+  makeTransaction(16, {
+    type: 'expense',
+    title: 'Sneakers',
+    amount: 3200,
+    category: 'Shopping',
+    mode: 'Credit Card',
+    date: inMonth(-1, 14, 16),
+  }),
+  makeTransaction(17, {
+    type: 'expense',
+    title: 'Dentist visit',
+    amount: 850,
+    category: 'Healthcare',
+    mode: 'UPI',
+    date: inMonth(-1, 19, 11),
+  }),
+  makeTransaction(18, {
+    type: 'expense',
+    title: 'Birthday gift',
     amount: 1500,
-    color: '#74b9ff',
-    bgColor: 'bg-[#74b9ff]/20',
-    icon: <Baby size={20} color="#74b9ff" />,
+    category: 'Gifts & Donations',
+    mode: 'UPI',
+    date: inMonth(-1, 22, 18),
+  }),
+
+  // -----------------------------------------
+  // Two months ago
+  // -----------------------------------------
+  makeTransaction(19, {
     type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
-  {
-    name: 'Pets',
-    amount: 800,
-    color: '#a55eea',
-    bgColor: 'bg-[#a55eea]/20',
-    icon: <PawPrint size={20} color="#a55eea" />,
+    title: 'Monthly salary',
+    amount: 85000,
+    category: 'Salary',
+    mode: 'Net Banking',
+    date: inMonth(-2, 1, 9),
+  }),
+  makeTransaction(20, {
     type: 'income',
-    date: '15 Aug',
+    title: 'Quarterly dividend',
+    amount: 3200,
+    category: 'Dividends',
+    mode: 'Net Banking',
+    date: inMonth(-2, 12, 10),
+  }),
+  makeTransaction(21, {
+    type: 'expense',
+    title: 'Goa trip',
+    amount: 12500,
+    category: 'Travel & Vacation',
     mode: 'Credit Card',
-  },
-  {
-    name: 'Other',
-    amount: 300,
-    color: '#95a5a6',
-    bgColor: 'bg-[#95a5a6]/20',
-    icon: <MoreHorizontal size={20} color="#95a5a6" />,
+    date: inMonth(-2, 17, 7),
+    notes: 'Flights and stay',
+  }),
+  makeTransaction(22, {
+    type: 'expense',
+    title: 'Online course',
+    amount: 4500,
+    category: 'Education',
+    mode: 'Net Banking',
+    date: inMonth(-2, 8, 21),
+  }),
+  makeTransaction(23, {
+    type: 'expense',
+    title: 'Vet checkup',
+    amount: 900,
+    category: 'Pets',
+    mode: 'Cash',
+    date: inMonth(-2, 26, 12),
+  }),
+  makeTransaction(24, {
     type: 'income',
-    date: '15 Aug',
-    mode: 'Credit Card',
-  },
+    title: 'Amazon refund',
+    amount: 1299,
+    category: 'Refund',
+    mode: 'UPI',
+    date: inMonth(-2, 28, 15),
+  }),
 ];

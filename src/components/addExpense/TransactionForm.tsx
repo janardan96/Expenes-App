@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import {
   Alert,
+  Keyboard,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -27,6 +28,8 @@ import {
 } from '@stores/reducers/transactionReducers';
 import type { AppDispatch } from '@stores/reducers/store';
 import { useTheme } from '@context/ThemeContext';
+import { useCurrency } from '@context/CurrencyContext';
+import { currencyPrefix } from '@utils/format';
 import {
   categoriesForType,
   isPaymentMode,
@@ -59,15 +62,21 @@ interface TransactionFormProps {
   /** Amount detected by the receipt scanner, applied as soon as it changes */
   scannedAmount?: string | null;
   onScanBill?: () => void;
+  /** Fired when the notes field gains focus, so the screen can scroll to it */
+  onNotesFocus?: () => void;
+  onNotesBlur?: () => void;
 }
 
 const TransactionForm = ({
   type,
   scannedAmount,
   onScanBill,
+  onNotesFocus,
+  onNotesBlur,
 }: TransactionFormProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { theme } = useTheme();
+  const { option } = useCurrency();
   const isDark = theme === 'dark';
 
   const isIncome = type === 'income';
@@ -102,6 +111,9 @@ const TransactionForm = ({
   }, [scannedAmount, setValue]);
 
   const onSubmit = (values: TransactionFormValues) => {
+    // Validation passed, so close the keyboard before saving
+    Keyboard.dismiss();
+
     // The schema already guarantees both values, the guards keep the types safe
     if (
       !isTransactionCategory(values.category) ||
@@ -129,7 +141,9 @@ const TransactionForm = ({
 
     Alert.alert(
       isIncome ? 'Income added' : 'Expense added',
-      `${transaction.title} · ₹${transaction.amount.toFixed(2)}`,
+      `${transaction.title} · ${currencyPrefix(option.symbol)}${transaction.amount.toFixed(
+        2,
+      )}`,
     );
   };
 
@@ -156,7 +170,7 @@ const TransactionForm = ({
               onChangeText={text => onChange(sanitizeAmount(text))}
               label="Amount"
               required
-              prefix="₹"
+              prefix={option.symbol}
               prefixClassName="text-xl"
               placeholder="0.00"
               keyboardType="decimal-pad"
@@ -313,6 +327,8 @@ const TransactionForm = ({
               numberOfLines={3}
               maxLength={200}
               error={errors.notes?.message}
+              onFocus={onNotesFocus}
+              onBlur={onNotesBlur}
               className="min-h-[72px] text-left"
             />
           )}

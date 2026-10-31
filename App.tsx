@@ -12,6 +12,8 @@ import store, { persistore } from '@stores/reducers/store';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { ThemeProvider } from '@context/ThemeContext';
 import { LanguageProvider } from '@context/LanguageContext';
+import { CurrencyProvider } from '@context/CurrencyContext';
+import SampleDataLoader from '@components/common/SampleDataLoader';
 
 function App() {
   return (
@@ -19,7 +21,10 @@ function App() {
       <PersistGate loading={null} persistor={persistore}>
         <ThemeProvider>
           <LanguageProvider>
-            <NavigationWrapper />
+            <CurrencyProvider>
+              <SampleDataLoader />
+              <NavigationWrapper />
+            </CurrencyProvider>
           </LanguageProvider>
         </ThemeProvider>
       </PersistGate>

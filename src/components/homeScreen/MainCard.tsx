@@ -3,10 +3,19 @@ import React from 'react';
 import { useTheme } from '@context/ThemeContext';
 import CustomText from '@components/common/CustomText';
 import { BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react-native';
+import { useCurrency } from '@context/CurrencyContext';
 
-const MainCard = () => {
+type Props = {
+  balance: number;
+  income: number;
+  expense: number;
+};
+
+const MainCard = ({ balance, income, expense }: Props) => {
   const { theme } = useTheme();
+  const { format } = useCurrency();
   const isDark = theme === 'dark';
+
   return (
     <View
       style={[
@@ -25,9 +34,10 @@ const MainCard = () => {
             fontSize={24}
             className="text-white font-semibold"
           >
-            ₹ 1,234.56
+            {format(balance)}
           </CustomText>
         </View>
+
         <View className="flex flex-row justify-between mt-6">
           <View className="flex flex-col gap-y-1 justify-end items-start">
             <View className="flex flex-row gap-x-2 items-center ">
@@ -37,9 +47,10 @@ const MainCard = () => {
               </CustomText>
             </View>
             <CustomText variant="h4" className="text-white font-semibold">
-              ₹ 2,340
+              {format(income)}
             </CustomText>
           </View>
+
           <View className="flex flex-col gap-y-1 justify-end items-end">
             <View className="flex flex-row gap-x-2 items-center ">
               <BanknoteArrowUp size={18} color={'#ff6b6b'} />
@@ -49,7 +60,7 @@ const MainCard = () => {
             </View>
 
             <CustomText variant="h4" className="text-white font-semibold">
-              ₹ 1,111
+              {format(expense)}
             </CustomText>
           </View>
         </View>

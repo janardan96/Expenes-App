@@ -54,6 +54,7 @@ import {
 } from 'react-native-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import { X } from 'lucide-react-native';
+import { useCurrency } from '@context/CurrencyContext';
 import { parseTotalFromText, Confidence } from '../../utils/recieptParser';
 
 export interface ReceiptSaveResult {
@@ -75,6 +76,7 @@ export function ReceiptScannerContent({
   onSave,
   onClose,
 }: ReceiptScannerContentProps) {
+  const { option } = useCurrency();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [totalText, setTotalText] = useState<string>('');
@@ -281,7 +283,9 @@ export function ReceiptScannerContent({
           </Text>
 
           <View className="flex-row items-center border border-gray-200 rounded-xl px-3 bg-white">
-            <Text className="text-lg mr-1.5 text-gray-800">₹</Text>
+            <Text className="text-lg mr-1.5 text-gray-800">
+              {option.symbol}
+            </Text>
 
             <TextInput
               className="flex-1 text-lg py-3 text-gray-900"

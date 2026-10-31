@@ -37,14 +37,22 @@ export const transactionsSlice = createSlice({
     removeTransaction: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
     },
+    /** Replaces the list, used by the sample data loader */
+    seedTransactions: (state, action: PayloadAction<Transaction[]>) => {
+      state.items = action.payload;
+    },
     clearTransactions: state => {
       state.items = [];
     },
   },
 });
 
-export const { addTransaction, removeTransaction, clearTransactions } =
-  transactionsSlice.actions;
+export const {
+  addTransaction,
+  removeTransaction,
+  seedTransactions,
+  clearTransactions,
+} = transactionsSlice.actions;
 
 export const selectTransactions = (state: RootState) => state.transactions.items;
 

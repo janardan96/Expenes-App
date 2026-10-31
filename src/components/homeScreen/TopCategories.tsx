@@ -1,68 +1,129 @@
-import { Platform, StyleSheet, View } from 'react-native';
-import React from 'react';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+
 import CustomText from '@components/common/CustomText';
 import { useTheme } from '@context/ThemeContext';
-import { customData } from '@utils/dummyData';
+import { selectTransactions } from '@stores/reducers/transactionReducers';
+import { TRANSACTION_CATEGORY_META } from '@utils/transactionCategoryIcons';
+import { useCurrency } from '@context/CurrencyContext';
+import { ScreensName } from '@utils/screen';
+import type { TransactionCategory } from '@utils/transactionCategories';
+
+const TOP_COUNT = 8;
 
 const TopCategories = () => {
+  const navigation = useNavigation();
   const { theme } = useTheme();
+  const { format } = useCurrency();
   const isDark = theme === 'dark';
-  const sortedData = customData
-    .sort((a, b) => b.amount - a.amount)
-    ?.slice(0, 6); // Sort and take top 3 categories
+  const transactions = useSelector(selectTransactions);
+
+  const categories = useMemo(() => {
+    const totals = new Map<TransactionCategory, number>();
+
+    transactions.forEach(item => {
+      if (item.type === 'expense') {
+        totals.set(
+          item.category,
+          (totals.get(item.category) ?? 0) + item.amount,
+        );
+      }
+    });
+
+    return Array.from(totals.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, TOP_COUNT);
+  }, [transactions]);
+
+  const largest = categories[0]?.[1] ?? 0;
+
   return (
     <View>
-      <View className="flex-row justify-between items-end">
+      <View className="flex-row justify-between items-end mb-1">
         <CustomText
           variant="h5"
           className="font-semibold text-gray-700 dark:text-gray-200"
         >
           Top Categories
         </CustomText>
-        <CustomText
-          variant="h6"
-          className="font-medium text-blue-500 dark:text-blue-400 "
+        <Pressable
+          onPress={() => navigation.navigate(ScreensName.Categories as never)}
+          hitSlop={8}
+          className="px-4 pb-1"
         >
-          See all
-        </CustomText>
+          <CustomText
+            variant="h6"
+            className="font-medium text-primary dark:text-[#7fc8c2]"
+          >
+            See all
+          </CustomText>
+        </Pressable>
       </View>
       <View
         style={[
           styles.buttonShadow,
           { shadowColor: isDark ? '#000000' : '#438883' },
         ]}
-        className="w-full flex bg-white rounded-md py-3 px-2 dark:bg-dark-card mt-2"
+        className="w-full flex bg-white rounded-md py-3 px-3 dark:bg-dark-card mt-2"
       >
-        {sortedData?.map((item, index) => {
-          return (
-            <View key={index}>
-              <View className="w-full flex flex-row gap-x-4 items-center ">
-                <View className={`rounded-full ${item.bgColor} p-2 flex`}>
-                  {item.icon}
-                </View>
-                <View className="flex-1 px-4">
-                  <View className=" flex flex-row justify-between">
-                    <CustomText
-                      variant="h6"
-                      className="text-gray-700 dark:text-gray-200 font-medium "
-                    >
-                      {item.name}
-                    </CustomText>
-                    <CustomText
-                      variant="h6"
-                      className="font-semibold text-gray-700 dark:text-gray-200"
-                    >
-                      ₹{Math.round(Number(item.amount)).toFixed(0)}
-                    </CustomText>
+        {categories.length === 0 ? (
+          <CustomText
+            variant="h6"
+            className="py-2 text-center text-gray-500 dark:text-gray-400"
+          >
+            No expenses to summarise yet
+          </CustomText>
+        ) : (
+          categories.map(([category, amount], index) => {
+            const meta = TRANSACTION_CATEGORY_META[category];
+            const Icon = meta.icon;
+            // share of the biggest category, so the bars are comparable
+            const width = largest ? (amount / largest) * 100 : 0;
+
+            return (
+              <View key={category} className={index > 0 ? 'mt-3' : ''}>
+                <View className="flex-row items-center gap-3">
+                  <View
+                    className="h-9 w-9 items-center justify-center rounded-full"
+                    style={{ backgroundColor: `${meta.color}22` }}
+                  >
+                    <Icon size={18} color={meta.color} />
+                  </View>
+
+                  <View className="flex-1">
+                    <View className="flex-row items-center justify-between">
+                      <CustomText
+                        variant="h6"
+                        className="font-medium text-gray-700 dark:text-gray-200"
+                      >
+                        {category}
+                      </CustomText>
+
+                      <CustomText
+                        variant="h6"
+                        className="font-semibold text-gray-700 dark:text-gray-200"
+                      >
+                        {format(amount)}
+                      </CustomText>
+                    </View>
+
+                    <View className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
+                      <View
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${Math.max(width, 6)}%`,
+                          backgroundColor: meta.color,
+                        }}
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
-              {index !== sortedData.length - 1 && (
-                <View className="border-b border-BDPrimary dark:border-BDPrimary-dark my-2" />
-              )}
-            </View>
-          );
-        })}
+            );
+          })
+        )}
       </View>
     </View>
   );

@@ -9,7 +9,7 @@ import ProfileTabIcon from '@assets/icons/ProfileTabIcon';
 import { Platform } from 'react-native';
 import GlassTabBar from '@components/tab/GlassTabBar';
 import AddExpense from '@screens/AddExpense/Add';
-import ProfileScreen from '@components/profile';
+import ProfileScreen from '@screens/profile';
 import { useTheme } from '@context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +55,7 @@ const BottomTabs = () => {
 
       <Tab.Screen
         name={BottomTabScreens.Stats}
-        component={AddExpense}
+        component={() => <></>}
         options={{
           tabBarIcon: ({ focused }) => (
             <StatsTabIcon focused={focused} size={20} />
@@ -63,20 +63,11 @@ const BottomTabs = () => {
         }}
       />
 
-      <Tab.Screen
-        name={BottomTabScreens.AddExpense}
-        component={() => <></>} // This screen won't render anything
-        listeners={{
-          tabPress: e => {
-            // stop React Navigation from treating this as a normal tab switch
-            e.preventDefault();
-          },
-        }}
-      />
+      <Tab.Screen name={BottomTabScreens.AddExpense} component={AddExpense} />
 
       <Tab.Screen
         name={BottomTabScreens.Wallet}
-        component={HomeScreen}
+        component={() => <></>}
         options={{
           tabBarIcon: ({ focused }) => (
             <WalletTabIcon focused={focused} size={26} />

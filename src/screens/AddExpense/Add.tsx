@@ -26,6 +26,7 @@ const AddExpense = () => {
   const [scannerVisible, setScannerVisible] = useState(false);
   const [scannedAmount, setScannedAmount] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const notesFocusedRef = useRef(false);
 
   const isIncome = type === 'income';
 
@@ -43,14 +44,29 @@ const AddExpense = () => {
 
   React.useEffect(() => {
     const subscription = Keyboard.addListener('keyboardDidShow', () => {
-      scrollViewRef.current?.scrollTo({
-        y: 380,
-        animated: true,
-      });
+      // Notes sits at the bottom of the form; the other fields are already
+      // visible, so the screen should only move for this one.
+      if (notesFocusedRef.current) {
+        scrollViewRef.current?.scrollTo({ y: 380, animated: true });
+      }
     });
 
     return () => subscription.remove();
   }, []);
+
+  const handleNotesFocus = () => {
+    notesFocusedRef.current = true;
+
+    // The keyboard may already be open (moving from Amount to Notes),
+    // in which case keyboardDidShow will not fire again.
+    requestAnimationFrame(() =>
+      scrollViewRef.current?.scrollToEnd({ animated: true }),
+    );
+  };
+
+  const handleNotesBlur = () => {
+    notesFocusedRef.current = false;
+  };
 
   return (
     <Layout>
@@ -108,6 +124,8 @@ const AddExpense = () => {
               type={type}
               scannedAmount={scannedAmount}
               onScanBill={() => setScannerVisible(true)}
+              onNotesFocus={handleNotesFocus}
+              onNotesBlur={handleNotesBlur}
             />
           </ScrollView>
         </KeyboardAvoidingView>
